@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>map</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=idn1jfFQENC0XTYR3WkbmKWrMI7CSZb6"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style type="text/css">
+			body,
+			html,
+			#allmap {
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				margin: 0;
+				font-family: "微软雅黑";
+			}
+			
+			#p {
+				margin: 0;
+				line-height: 1.5;
+				font-size: 13px;
+				text-indent: 2em;
+			}
+		</style>
+		<style>
+			#touch {
+				width: 50px;
+				height: 50px;
+				position: absolute;
+				right: 30px;
+				top: 200px;
+				margin-left: -30px;
+				margin-top: -30px;
+				z-index: 999999;
+			}
+			
+			#simple-menu {
+				cursor: move;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="allmap"></div>
+		<div class="mui-content">
+			<div id="touch" style="width: 50px; height: 50px; position: absolute;">
+				<a href="shangchuan.html"><img id="simple-menu" src="img/logo.png" style="width: 50px; height: 50px;" /></a>
+			</div>
+		</div>
+	</body>
+
+</html>
+
+<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+	var point = new BMap.Point(114.516516, 38.08906);
+	map.centerAndZoom(point, 15);
+
+	var data_info = [
+		[114.51594, 38.087321, "招待所", 0, 'images/ka.png'],
+		[114.518845, 38.088063, "综餐", 1, 'images/ka.png'],
+		[114.513115, 38.089925, "体育场", 3, 'images/ka.png']
+	];
+
+	var icon_lend = [
+		["images/blu.png"],
+		["images/yell.png"],
+		["images/ora.png"],
+		["images/red.png"]
+	]
+
+	for(var i = 0; i < data_info.length; i++) {
+
+		var myIcon = new BMap.Icon(icon_lend[data_info[i][3]], new BMap.Size(60, 40));
+		var marker = new BMap.Marker(new BMap.Point(data_info[i][0], data_info[i][1]), {
+			icon: myIcon
+		}); // 创建标注
+		//var content = data_info[i][2];	
+		marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+		//string temp=data_info[i][4]
+		//alert(data[i][4]);
+		var content =
+			"<img style='float:right;margin:4px' id='imgDemo' src='" + data_info[i][4] + "' width='139' height='104' />" +
+			data_info[i][2] + "</div>";
+		map.addOverlay(marker); // 将标注添加到地图中
+		addClickHandler(content, marker);
+	}
+
+	function addClickHandler(content, marker) {
+		marker.addEventListener("click", function(e) {
+			openInfo(content, e)
+		});
+	}
+
+	function openInfo(content, e) {
+		var p = e.target;
+		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+		var infoWindow = new BMap.InfoWindow(content); // 创建信息窗口对象 
+		map.openInfoWindow(infoWindow, point); //开启信息窗口
+	}
+</script>
+<script>
+	mui.init({
+		swipeBack: true //启用右滑关闭功能
+	});
+	var div = document.getElementById('touch');
+	var viewWidth = window.screen.width;
+	var viewHeight = window.screen.height;
+	var divWidth = parseInt(div.style.width);
+	var divHeight = parseInt(div.style.height);
+	div.addEventListener('touchmove', function(event) {
+		event.preventDefault(); //阻止其他事件
+		// 如果这个元素的位置内只有一个手指的话
+		if(event.targetTouches.length == 1) {
+			var touch = event.targetTouches[0]; // 把元素放在手指所在的位置
+			var tempWidth = touch.pageX; //存储x坐标
+			var tempHeigth = touch.pageY; //存储Y坐标
+			if((touch.pageX + divWidth) > viewWidth) { //超越右边界
+				tempWidth = viewWidth - divWidth / 2;
+			}
+			if((touch.pageY + divHeight) > viewHeight) { //超越下边界
+				tempHeigth = viewHeight - divHeight;
+			}
+			if((touch.pageX - divWidth) < 0) { //超越左边界
+				tempWidth = divWidth / 2;
+			}
+			if((touch.pageY - divHeight) < 0) { //超越上边界
+				tempHeigth = divHeight / 2;
+			}
+			div.style.left = tempWidth + 'px';
+			div.style.top = tempHeigth + 'px';
+			div.style.background = "";
+		}
+	}, false);
+</script>

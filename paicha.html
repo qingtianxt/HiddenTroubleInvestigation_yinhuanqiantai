@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script type="text/javascript" src="js/common.js"></script>
+
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">排查表</h1>
+		</header>
+		<div class="mui-content">
+			<h5 class="mui-content-padded">宿舍排查表</h5>
+			<div class="mui-card">
+				<form class="mui-input-group" id="paicha">
+					<div class="mui-input-row mui-checkbox" id="01001">
+						<label class="mui-table-view-cell">宿舍电路老化：详情</label>
+						<input name="checkbox1" value="Item 3" type="checkbox" checked="checked">
+					</div>
+					<div class="mui-input-row mui-checkbox" id="01001">
+						<label class="mui-table-view-cell">宿舍床架是否牢固：详情</label>
+						<input name="checkbox1" value="Item 3" type="checkbox">
+					</div>
+					<!--	<div class="mui-input-row mui-checkbox">
+						<label class="mui-table-view-cell">checked：没问题</label>
+						<input name="checkbox1" value="Item 4" type="checkbox" checked>
+					</div>
+					<div class="mui-input-row mui-checkbox mui-disabled">
+						<label class="mui-table-view-cell">disabled checkbox</label>
+						<input name="checkbox1" value="data[][]" type="checkbox" disabled="disabled">
+					</div>-->
+
+				</form>
+			</div>
+			<button type="button" class=" mui-btn mui-btn-block mui-btn-primary" id="shangchuan">确认</button>
+		</div>
+	</body>
+
+	<script src="js/mui.min.js"></script>
+
+	<script>
+		mui.init({
+			swipeBack: true //启用右滑关闭功能  
+		});
+
+		mui('.mui-input-group').on('change', 'input', function() {
+			var value = this.checked ? "没问题" : this.value;
+			this.previousElementSibling.innerText = value;
+		});
+
+		mui.plusReady(function() {
+
+			mui('.mui-input-group').on('click', 'label', function() {
+				mui.openWindow({
+					url: 'shangchuan1.html',
+					extras: {
+						standardId: this.parentElement.id //扩展参数
+					}
+				});
+				//console.log(webview.id); //输出mui字符串
+				//这个可以试着去删除元素，否则可以再次点击，影响设置结果
+				this.nextElementSibling.disabled = true;
+			});
+
+		});
+
+		document.getElementById("shangchuan").addEventListener('tap', function() {
+
+			//遍历整个表，把没有提交过的表项提交给后台，提交的是一个隐患标准
+			var length = 0;
+			var ids = "";
+			mui('.mui-input-row').each(function() {
+				if(!this.children[1].disabled) {
+					ids += this.id + ","
+					length += 1;
+				}
+			});
+			if(length == 0) {
+				mui.toast('所有隐患均已上传');
+			} else {
+				ids = ids.substring(0, ids.length - 1);
+				//将没有问题的隐患批量上传给后台，完成排查人的排查任务
+				var url = "http://39.106.26.170:8080/HiddenTroubleInvestigation/hiddenDanger_saveCheckUpForUI.action?length=" + length + "&ids=" + ids;
+				mui.ajax(url, {
+					data: {},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'POST', //HTTP请求类型.
+					async: 'false',
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						if(data != null) {
+							mui.toast("排查任务上传成功");
+						} else {
+							mui.toast("系统异常，上传失败");
+						}
+
+					},
+					error: function(xhr, type, errorThrown) { //异常处理；
+						console.log(type);
+						mui.toast("网络出问题了,请重新上传")
+					}
+				});
+			}
+
+		});
+	</script>
+
+	<!--<script>
+		var oDiv = document.getElementById('01001')
+		var myVar;
+		oDiv.onmousedown = function() {
+			myVar = setTimeout(function() {
+				mui.openWindow({
+					url: 'shangchuan.html',
+					id: 'index.html'
+				});
+
+			}, 1000);
+		}
+		oDiv.onmouseup = function() {
+			clearTimeout(myVar);
+		}
+	</script>-->
+	<script>
+		(function($, doc) {
+			$.plusReady(function() {
+
+				var self = plus.webview.currentWebview();
+				var firstPlace = self.place_id; //获得参数
+				var user_id=localStorage.getItem("user_id");
+
+				var url = "http://39.106.26.170:8080/HiddenTroubleInvestigation/standardInvestigation_findByPageForUI.action?trueName="+user_id+"&firstPlace="+firstPlace;
+				mui.ajax(url, {
+					data: {},
+					dataType: 'jsonp', //服务器返回json格式数据
+					type: 'POST', //HTTP请求类型.
+					async: 'false',
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						var content = "";
+						var json = eval("(" + data + ")");
+						$.each(json, function(index, item) {
+							content += "<div class='mui-input-row mui-checkbox' id='" + item.standardInvestigation_id + "'><label class = 'mui-table-view-cell'>" + item.content + ":" + item.info + " </label><input name = 'checkbox' value =" + item.content + ":" + item.info + " type = 'checkbox' ></div>";
+						});
+
+						document.getElementById("paicha").innerHTML = content;
+					},
+					error: function(xhr, type, errorThrown) { //异常处理；
+						console.log(type);
+						mui.toast("网络出问题了")
+					}
+				});
+
+			});
+		})(mui, document);
+	</script>
+
+</html>

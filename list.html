@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">Show(展示界面)</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-card">
+				<div class="mui-card-header mui-card-media">
+					<div class="mui-card-media-object mui-pull-left">
+						<img src="images/logo.png" width="34px" height="34px" />
+					</div>
+
+					<div class="mui-media-body">
+						小M
+						<p>发表于 2016-06-30 15:30</p>
+					</div>
+				</div>
+				解决后：
+				<div class="mui-card-content mui-card-media" style="height:40vw;background-image:url(images/yuantiao.jpg)" id="tiaozhuan"></div>
+				<div class="mui-card-footer">
+					<a class="mui-card-link">隐患三级</a>
+
+					<p>解决问题：综餐的XX出问题了</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="mui-content">
+			<div class="mui-card">
+				<div class="mui-card-header mui-card-media">
+					<div class="mui-card-media-object mui-pull-left">
+						<img src="images/logo.png" width="34px" height="34px" />
+					</div>
+
+					<div class="mui-media-body">
+						小M
+						<p>发表于 2016-06-30 15:30</p>
+					</div>
+				</div>
+				解决后：
+				<div class="mui-card-content mui-card-media" style="height:40vw;background-image:url(images/yuantiao.jpg)"></div>
+				<div class="mui-card-footer">
+					<a class="mui-card-link">隐患三级</a>
+
+					<p>解决问题：综餐的XX出问题了</p>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+	</body>
+
+</html>
+<script>
+	var shenButton = document.getElementById('tiaozhuan');
+	//监听点击事件
+	shenButton.addEventListener("tap", function() {
+		mui.openWindow({
+			url: 'list_detial.html',
+			id: 'detail',
+			show: {
+				aniShow: 'pop-in'
+			}
+		});
+	});
+</script>
+
+<!--<script type="text/javascript">
+	//维修人员头像，上传时间，隐患解决图片，隐患等级，隐患描述
+	var data_info = ['images/logo.png',"2018-06-09 11:44:10",'images/yuantiao.jpg',3,综餐的XX出问题了],
+					 [114.518845,38.088063,"综餐",1,'images/ka.png'],
+					 [114.513115,38.089925,"体育场",3,'images/ka.png']
+					];
+					
+	var i_lend=[[隐患一级],[隐患二级],[隐患三级],[隐患四级]]
+
+	</script>-->

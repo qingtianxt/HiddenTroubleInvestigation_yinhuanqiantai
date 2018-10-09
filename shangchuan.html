@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<title>提交</title>
+
+		<script type="text/javascript" src="js/common.js"></script>
+		<script type="text/javascript">
+			var i = 1,
+				gentry = null,
+				w = null;
+			var hl = null,
+				le = null,
+				de = null,
+				ie = null;
+			var unv = true;
+			var bUpdated = false;
+
+			function plusReady() {
+				// 获取摄像头目录对象
+				plus.io.resolveLocalFileSystemURL('_doc/', function(entry) {
+					entry.getDirectory('camera', {
+						create: true
+					}, function(dir) {
+						gentry = dir;
+						updateHistory();
+					}, function(e) {
+						outSet('Get directory "camera" failed: ' + e.message);
+					});
+				}, function(e) {
+					outSet('Resolve "_doc/" failed: ' + e.message);
+				});
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener('plusready', plusReady, false);
+			}
+			// 监听DOMContentLoaded事件
+			document.addEventListener('DOMContentLoaded', function() {
+				// 获取DOM元素对象
+				hl = document.getElementById('history');
+				le = document.getElementById('empty');
+				de = document.getElementById('display');
+				if(ie = document.getElementById('index')) {
+					ie.onchange = indexChanged;
+				}
+				// 判断是否支持video标签
+				//unv=!document.createElement('video').canPlayType;
+				//updateHistory();
+			}, false);
+
+			function changeIndex() {
+				outSet('选择摄像头：');
+				ie.focus();
+			}
+
+			function indexChanged() {
+				de.innerText = ie.options[ie.selectedIndex].innerText;
+				i = parseInt(ie.value);
+				outLine(de.innerText);
+			}
+			// 拍照
+			function getImage() {
+				outSet('开始拍照：');
+				var cmr = plus.camera.getCamera();
+				cmr.captureImage(function(p) {
+					outLine('成功：' + p);
+					plus.io.resolveLocalFileSystemURL(p, function(entry) {
+						createItem(entry);
+					}, function(e) {
+						outLine('读取拍照文件错误：' + e.message);
+					});
+				}, function(e) {
+					outLine('失败：' + e.message);
+				}, {
+					filename: '_doc/camera/',
+					index: 1
+				});
+			}
+		</script>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a href="javascript:history.back(-1)" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">提交</h1>
+		</header>
+
+		<div class="mui-card">
+
+			<div class="mui-card-content">
+				<img src="images/yuantiao.jpg" alt="图片加载失败" width="100%" />
+			</div>
+
+			<div class="mui-card-footer">
+				<a class="mui-card-link" style="color: #333;">请完成下边详情登记</a>
+				<a class="mui-card-link"></a>
+				<div class="button" style="color:dodgerblue;" onclick="getImage()">拍照</div>
+			</div>
+			<form class="mui-input-group">
+				<div class="mui-card-content-inner">
+					<p>问题描述：</p>
+					<div class="mui-input-row mui-input-clear" style="margin: 5px 0px;">
+						<textarea id="textarea" rows="5" placeholder="例如：从左往右数第三根电线杆上的的电线垂地"></textarea>
+					</div>
+				</div>
+				<div class="mui-card-content-inner">
+					<p>地点描述：</p>
+					<button id='showCityPicker' class="mui-btn mui-btn-block" type='button'>地点选择</button>
+					<div id='cityResult' class="ui-alert"></div>
+					<div id='place' style="display: none;"></div>
+					<p>隐患等级选择：</p>
+					<button id='showGradePicker' class="mui-btn mui-btn-block" type='button'>隐患等级选择</button>
+					<div id='gradeResult' class="ui-alert"></div>
+					<div id='grade' style="display: none;"></div>
+
+					<p>整改人选择：</p>
+					<button id='showUserPicker' class="mui-btn mui-btn-block" type='button'>整改人选择</button>
+					<div id='userResult' class="ui-alert"></div>
+					<div id='user' style="display: none;"></div>
+
+				</div>
+			</form>
+		</div>
+		<button type="button" class=" mui-btn mui-btn-block mui-btn-primary" id="loginBtn">确认</button>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/mui.picker.js"></script>
+		<script src="js/mui.poppicker.js"></script>
+
+		<script>
+			(function($, doc) {
+				$.init();
+				$.ready(function() {
+					document.getElementById("loginBtn").addEventListener('tap', function() {
+
+						var info = doc.getElementById('textarea').value;
+						var place = doc.getElementById('place').value;
+						var grade = doc.getElementById('grade').value;
+						var repair = doc.getElementById('user').value;
+						
+						var user_id=localStorage.getItem("user_id");
+						//var name = plus.storage.getItem('name');
+						/*	var jsonData = {
+								info: info,
+								place: place,
+								grade: grade
+							}
+							alert(jsonData);*/
+						//提交隐患信息
+						var self = plus.webview.currentWebview();
+						var standardId = self.standardId; //获得参数
+						var url = "";
+						if(standardId != null) {
+							//说明是排查页面跳转过来的
+							url = "http://39.106.26.170:8080/HiddenTroubleInvestigation/hiddenDanger_saveForUI.action?info=" + info + "&secondPlace=" + place + "&type=1&checkUpStatus=1&gradeId=" + grade + "&repairId=" + repair+"&userId="+user_id;
+						} else {
+							url = "http://39.106.26.170:8080/HiddenTroubleInvestigation/hiddenDanger_saveForUI.action?info=" + info + "&secondPlace=" + place + "&type=0&gradeId=" + grade + "&repairId=" + repair+"&userId="+user_id;
+						}
+						mui.ajax(url, {
+							data: {},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'POST', //HTTP请求类型.
+							async: 'false',
+							timeout: 10000, //超时时间设置为10秒；
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							success: function(data) {
+								mui.toast("隐患上传成功");
+							},
+							error: function(xhr, type, errorThrown) { //异常处理；
+								console.log(type);
+								mui.toast("网络出问题了,请重新上传")
+							}
+						});
+					});
+
+					var gradePicker = new $.PopPicker();
+					var gradeData = [];
+
+					//获取等级信息
+					mui.ajax('http://39.106.26.170:8080/HiddenTroubleInvestigation/grade_getGrade.action', {
+						data: {},
+						dataType: 'jsonp', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型.
+						async: 'false',
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							var content = "";
+							var json = eval("(" + data + ")");
+							$.each(json, function(index, item) {
+								gradeData.push({
+									value: item.grade_id,
+									text: item.info
+								});
+							});
+
+							gradePicker.setData(gradeData);
+							var showGradePickerButton = doc.getElementById('showGradePicker');
+							var gradeResult = doc.getElementById('gradeResult');
+							showGradePickerButton.addEventListener('tap', function(event) {
+								gradePicker.show(function(items) {
+									//gradeResult.innerText = JSON.stringify(items[0]);
+									gradeResult.innerText = "你选择的是：" + items[0].text;
+									//返回 false 可以阻止选择框的关闭
+									//return false;
+									doc.getElementById('grade').value = items[0].value;
+								});
+							}, false);
+
+						},
+						error: function(xhr, type, errorThrown) { //异常处理；
+							console.log(type);
+						}
+					});
+
+					var userPicker = new $.PopPicker();
+					var userData = [];
+
+					//获取整改人信息
+					mui.ajax('http://39.106.26.170:8080/HiddenTroubleInvestigation/user_getRepair.action', {
+						data: {},
+						dataType: 'jsonp', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型.
+						async: 'false',
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							var content = "";
+							var json = eval("(" + data + ")");
+							$.each(json, function(index, item) {
+								userData.push({
+									value: item.user_id,
+									text: item.trueName
+								});
+							});
+
+							userPicker.setData(userData);
+							var showUserPickerButton = doc.getElementById('showUserPicker');
+							var userResult = doc.getElementById('userResult');
+							showUserPickerButton.addEventListener('tap', function(event) {
+								userPicker.show(function(items) {
+									//userResult.innerText = JSON.stringify(items[0]);
+									userResult.innerText = "你选择的整改人是：" + items[0].text;
+									//返回 false 可以阻止选择框的关闭
+									//return false;
+									doc.getElementById('user').value = items[0].value;
+								});
+							}, false);
+
+						},
+						error: function(xhr, type, errorThrown) { //异常处理；
+							console.log(type);
+						}
+					});
+
+					//二级
+					var _getParam = function(obj, param) {
+						return obj[param] || '';
+					};
+					var cityPicker = new $.PopPicker({
+						layer: 2
+					});
+					var cityData = [];
+					//获取地点信息
+					mui.ajax('http://39.106.26.170:8080/HiddenTroubleInvestigation/place_getFirst.action', {
+						data: {},
+						dataType: 'jsonp', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型.
+						async: 'false',
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							var content = "";
+							var json = eval("(" + data + ")");
+							$.each(json, function(index, item) {
+								var children = [];
+								mui.ajax('http://39.106.26.170:8080/HiddenTroubleInvestigation/place_getSecond.action?first_id=' + item.id, {
+									data: {},
+									dataType: 'jsonp', //服务器返回json格式数据
+									type: 'post', //HTTP请求类型.
+									async: 'false',
+									timeout: 10000, //超时时间设置为10秒；
+									headers: {
+										'Content-Type': 'application/json'
+									},
+									success: function(data) {
+										var content = "";
+										var json = eval("(" + data + ")");
+										$.each(json, function(index, item1) {
+											children.push({
+												value: item1.id,
+												text: item1.place_name
+											})
+										});
+
+									},
+									error: function(xhr, type, errorThrown) { //异常处理；
+										console.log(type);
+									}
+								});
+
+								cityData.push({
+									value: item.id,
+									text: item.place_name,
+									children: children
+								});
+
+							});
+
+							cityPicker.setData(cityData);
+							var showCityPickerButton = doc.getElementById('showCityPicker');
+							var cityResult = doc.getElementById('cityResult');
+							showCityPickerButton.addEventListener('tap', function(event) {
+								cityPicker.show(function(items) {
+									cityResult.innerText = "你选择的地点是:" + items[0].text + " " + items[1].text;
+									//返回 false 可以阻止选择框的关闭
+									//return false;
+
+									doc.getElementById('place').value = items[1].value;
+								});
+							}, false);
+
+						},
+						error: function(xhr, type, errorThrown) { //异常处理；
+							console.log(type);
+						}
+					});
+
+				});
+			})(mui, document);
+
+			mui(document.body).on('tap', '.mui-btn-primary', function(e) {
+				mui(this).button('loading');
+				setTimeout(function() {
+					mui(this).button('reset');
+				}.bind(this), 2000);
+			});
+
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var standardId = self.standardId; //获得参数
+				if(standardId != null) {
+
+					//如果id不为空，说明是从排查页面跳转过来的，这时候可以通过查询标准来自动给地点，隐患等级等内容进行赋值
+					var url = "http://39.106.26.170:8080/HiddenTroubleInvestigation/standardInvestigation_findByIdForUI.action?standardId=" + standardId;
+					console.log(url)
+					mui.ajax(url, {
+						data: {},
+						dataType: 'jsonp', //服务器返回json格式数据
+						type: 'POST', //HTTP请求类型.
+						async: 'false',
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							var content = "";
+							var json = eval("(" + data + ")");
+							//设置地点信息
+							var cityResult = document.getElementById('cityResult');
+							cityResult.innerText = "你选择的地点是:" + json.place.place_name;
+							document.getElementById('place').value = json.place.id;
+							//设置等级信息
+							var gradeResult = document.getElementById('gradeResult');
+							gradeResult.innerText = "你选择的是：" + json.grade.info;
+							document.getElementById('grade').value = json.grade.grade_id;
+							//设置整改人信息
+							var userResult = document.getElementById('userResult');
+							userResult.innerText = "你选择的整改人是：" + json.repair.trueName;
+							document.getElementById('user').value = json.repair.user_id;
+
+							//document.getElementById("paicha").innerHTML = content;
+						},
+						error: function(xhr, type, errorThrown) { //异常处理；
+							console.log(type);
+							mui.toast("网络出问题了")
+						}
+					});
+				}
+			});
+		</script>
+	</body>
+
+</html>

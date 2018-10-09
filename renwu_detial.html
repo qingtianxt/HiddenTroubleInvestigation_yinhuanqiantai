@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">Task Finish(任务完成)<h1>
+		</header>
+
+		<div class="mui-card">
+
+			<div class="mui-card-content">
+				<img src="images/yuantiao.jpg" alt="图片加载失败" width="100%" />
+			</div>
+
+			<div class="mui-card-footer">
+				<a class="mui-card-link" style="color: #333;">详细内容登记：</a>
+				
+				<a class="mui-card-link"></a>
+		        <div class="button" style="color:dodgerblue;" onclick="getImage()">拍照</div>
+			</div>
+			<form class="mui-input-group">
+				<div class="mui-card-content-inner">
+					<p>使用工具记录：</p>
+					<div class="mui-input-row mui-input-clear" style="margin: 5px 0px;">
+						<textarea id="textarea" rows="5" placeholder="例如：电线，钳子"></textarea>
+					</div>
+				</div>
+				
+			</form>
+		</div>
+		<button type="button" class=" mui-btn mui-btn-block mui-btn-primary">确认</button>
+
+				
+</body>
+<script src="js/mui.min.js"></script>
+    <script>
+        mui.init({
+            swipeBack: true //启用右滑关闭功能
+        });
+        mui(document.body).on('tap', '.mui-btn', function(e) {
+            mui(this).button('loading');
+            setTimeout(function() {
+                mui(this).button('reset');
+            }.bind(this), 2000);
+        });
+    </script>
+
+</html>

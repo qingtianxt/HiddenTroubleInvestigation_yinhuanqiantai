@@ -1,0 +1,133 @@
+{
+  "paicha.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/common.js",
+      "shangchuan.html"
+    ],
+    "refer": [
+      "shangchuan.html",
+      "index.html"
+    ]
+  },
+  "shangchuan.html": {
+    "resources": [
+      "js/mui.picker.js",
+      "js/common.js",
+      "images/yuantiao.jpg",
+      "js/mui.min.js",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "css/mui.poppicker.css",
+      "css/mui.picker.css"
+    ],
+    "refer": []
+  },
+  "index.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "fonts/mui.ttf",
+      "shangchuan.html"
+    ],
+    "refer": [
+      "shangchuan.html"
+    ]
+  },
+  "login.html": {
+    "resources": [
+      "js/app.js",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "js/mui.enterfocus.js",
+      "images/sinaweibo.png",
+      "images/weixin.png",
+      "images/qq.png",
+      "fonts/mui.ttf"
+    ],
+    "refer": [
+      "tab-webview-main.html"
+    ]
+  },
+  "setting.html": {
+    "resources": [
+      "css/feedback.css",
+      "img/logo.png",
+      "js/feedback.js",
+      "js/mui.view.js",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/iconfont-tianjia.png"
+    ],
+    "refer": []
+  },
+  "tab-webview-main.html": {
+    "resources": [
+      "fonts/mui.ttf",
+      "list.html",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "select.html"
+    ],
+    "refer": [
+      "setting.html",
+      "shangchuan.html",
+      "list.html",
+      "paicha.html",
+      "select.html"
+    ]
+  },
+  "list.html": {
+    "resources": [
+      "images/logo.png",
+      "css/app.css",
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "list_detial.html"
+    ]
+  },
+  "login1.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "tab-webview-main.html"
+    ]
+  },
+  "select.html": {
+    "resources": [
+      "images/\u0010ý.jpg",
+      "images/Sýý.jpg",
+      "images/Yf|.jpg",
+      "images/ý\r1.jpg",
+      "images/ýl|.jpg",
+      "images/ý@.jpg",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/paicha_sushe.jpg",
+      "images/paicha_jiaoxuelou.jpg",
+      "images/paicha_zhaodaisuo.jpg",
+      "images/paicha_bangonglou.jpg",
+      "images/paicha_canting.jpg",
+      "images/paicha_tiyuguan.jpg",
+      "images/\u0010ý.jpg",
+      "images/Sýý.jpg",
+      "images/Yf|.jpg",
+      "images/ý\r1.jpg",
+      "images/ýl|.jpg",
+      "images/ý@.jpg"
+    ],
+    "refer": [
+      "paicha.html"
+    ]
+  }
+}
